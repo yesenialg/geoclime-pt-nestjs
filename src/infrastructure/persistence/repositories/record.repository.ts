@@ -32,12 +32,27 @@ export class RecordRepository implements IRecordRepository {
     return new Record(record.id, zone, record.temperature, record.timestamp);
   }
 
+  async findByZone(zoneId: string): Promise<Record[]> {
+    const records = await this._recordRepo.find({ where: { zone: { id: zoneId } }, relations: ['zone'] });
+    return records.map(e => new Record(e.id, e.zone, e.temperature, e.timestamp));
+  }
+
+  async findByZoneOrdered(zoneId: string): Promise<Record[]> {
+    const records = await this._recordRepo.find({ where: { zone: { id: zoneId } }, relations: ['zone'] });
+    return records.map(e => new Record(e.id, e.zone, e.temperature, e.timestamp));
+  }
+
   async create(recordDto: CreateRecordRepositoryDto): Promise<Record> {
     const zone = await this._zoneRepository.findOneById(recordDto.zoneId);
     if (!zone) {
       throw new Error(`Zone with id ${recordDto.zoneId} not found`);
     }
-    const recordEntity = this._recordRepo.create(recordDto);
+    const recordEntity = this._recordRepo.create({
+      zone,
+      temperature: recordDto.temperature,
+      timestamp: recordDto.timestamp,
+    });
+    
     await this._recordRepo.save(recordEntity);
     return new Record(recordEntity.id, zone, recordEntity.temperature, recordEntity.timestamp);
   }

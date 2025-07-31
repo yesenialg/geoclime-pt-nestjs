@@ -11,6 +11,8 @@ import { CreateZoneUseCase } from './application/use-cases/zone/create-zone.usec
 import { GetAllZonesUseCase } from './application/use-cases/zone/get-all-zones.usecase';
 import { CreateRecordUseCase } from './application/use-cases/record/create-record.usecase';
 import { GetAllRecordsUseCase } from './application/use-cases/record/get-all-records.usecase';
+import { GetZoneSummaryUseCase } from './application/use-cases/zone/get-zone-summary.usecase';
+import { GetZoneAnomaliesUseCase } from './application/use-cases/zone/get-zone-anomalies.usecase';
 
 @Module({
   imports: [
@@ -46,7 +48,9 @@ import { GetAllRecordsUseCase } from './application/use-cases/record/get-all-rec
     CreateZoneUseCase,
     GetAllZonesUseCase,
     CreateRecordUseCase,
-    GetAllRecordsUseCase
+    GetAllRecordsUseCase,
+    GetZoneSummaryUseCase,
+    GetZoneAnomaliesUseCase
   ],
 })
 export class AppModule {}

@@ -3,7 +3,7 @@ import { IsString, IsNumber, IsDateString } from 'class-validator';
 
 
 export class CreateRecordControllerDto {
-    @ApiProperty({ example: '1', description: 'ID of the Zone' })
+    @ApiProperty({ example: '01', description: 'ID of the Zone' })
     @IsString()
     zoneId: string;
 
