@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { ZoneSummaryUseCaseDto } from "src/application/dtos/zone-summary.usecase.dto";
-import { IRecordRepository } from "src/domain/interfaces/record.repository.interface";
+import { IRecordRepository } from "../../../domain/interfaces/record.repository.interface";
 
 export class GetZoneSummaryUseCase {
     constructor(

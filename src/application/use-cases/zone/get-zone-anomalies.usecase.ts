@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { AnomalyUsecaseDto } from "src/application/dtos/zone-anomaly.usecase.dto";
-import { IRecordRepository } from "src/domain/interfaces/record.repository.interface";
+import { IRecordRepository } from "../../../domain/interfaces/record.repository.interface";
 
 export class GetZoneAnomaliesUseCase {
     constructor(
@@ -11,22 +11,38 @@ export class GetZoneAnomaliesUseCase {
         const records = await this._recordRepository.findByZoneOrdered(zoneId);
         const anomalies: AnomalyUsecaseDto[] = [];
 
-        for (let i = 0; i <= records.length - 3; i++) {
-            const sequence = records.slice(i, i + 3);
-            const isAnomaly = sequence.every((record, index) => {
-                if (index === 0) return true;
-                const diff = Math.abs(record.temperature - sequence[index - 1].temperature);
-                return diff >= 1.5;
-            });
-            if (isAnomaly) {
-                anomalies.push({
-                    zone: zoneId,
-                    records: sequence.map(r => ({
-                        timestamp: r.timestamp instanceof Date ? r.timestamp.toISOString() : String(r.timestamp),
-                        temperature: r.temperature
-                    }))
-                });
+        let group: typeof records = [];
+
+        for (let i = 0; i < records.length; i++) {
+            if (group.length === 0) {
+                group.push(records[i]);
+            } else {
+                const diff = Math.abs(records[i].temperature - records[i - 1].temperature);
+                if (diff >= 1.5) {
+                    group.push(records[i]);
+                } else {
+                    if (group.length >= 3) {
+                        anomalies.push({
+                            zone: zoneId,
+                            records: group.map(r => ({
+                                timestamp: r.timestamp instanceof Date ? r.timestamp.toISOString() : String(r.timestamp),
+                                temperature: r.temperature
+                            }))
+                        });
+                    }
+                    group = [records[i]];
+                }
             }
+        }
+
+        if (group.length >= 3) {
+            anomalies.push({
+                zone: zoneId,
+                records: group.map(r => ({
+                    timestamp: r.timestamp instanceof Date ? r.timestamp.toISOString() : String(r.timestamp),
+                    temperature: r.temperature
+                }))
+            });
         }
 
         return anomalies;

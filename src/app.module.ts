@@ -13,6 +13,9 @@ import { CreateRecordUseCase } from './application/use-cases/record/create-recor
 import { GetAllRecordsUseCase } from './application/use-cases/record/get-all-records.usecase';
 import { GetZoneSummaryUseCase } from './application/use-cases/zone/get-zone-summary.usecase';
 import { GetZoneAnomaliesUseCase } from './application/use-cases/zone/get-zone-anomalies.usecase';
+import { AuthModule } from './infrastructure/auth/auth.module';
+import { AuthController } from './presentation/controllers/auth.controller';
+import { AuthService } from './infrastructure/auth/auth.service';
 
 @Module({
   imports: [
@@ -34,8 +37,9 @@ import { GetZoneAnomaliesUseCase } from './application/use-cases/zone/get-zone-a
       }),
     }),
     TypeOrmModule.forFeature([ZoneEntity, RecordEntity]),
+    AuthModule,
   ],
-  controllers: [ZoneController, RecordController],
+  controllers: [ZoneController, RecordController, AuthController],
   providers: [
     {
       provide: 'IZoneRepository',
@@ -45,6 +49,7 @@ import { GetZoneAnomaliesUseCase } from './application/use-cases/zone/get-zone-a
       provide: 'IRecordRepository',
       useClass: RecordRepository,
     },
+    AuthService,
     CreateZoneUseCase,
     GetAllZonesUseCase,
     CreateRecordUseCase,
