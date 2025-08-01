@@ -34,7 +34,7 @@ export class ZoneController {
   }
 
   @Get(':zone/anomalies')
-  async getAnomalies(@Param('zone') zone: string) {
+  async getAnomalies(@Param('idZone') zone: string) {
     const anomalies = await this._getZoneAnomaliesUseCase.execute(zone);
     return { anomalies };
   }
