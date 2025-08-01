@@ -4,6 +4,7 @@ import { IZoneRepository } from 'src/domain/interfaces/zone.repository.interface
 
 @Injectable()
 export class CreateZoneUseCase {
+    
     constructor(
         @Inject('IZoneRepository') private readonly _zoneRepository: IZoneRepository) { }
 

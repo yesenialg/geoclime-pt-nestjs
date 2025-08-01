@@ -2,16 +2,21 @@ import { GetZoneSummaryUseCase } from "./get-zone-summary.usecase";
 
 describe("GetZoneSummaryUseCase", () => {
     let mockRecordRepository: any;
+    let mockZoneRepository: any;
     let useCase: GetZoneSummaryUseCase;
 
     beforeEach(() => {
         mockRecordRepository = {
             findByZone: jest.fn()
         };
-        useCase = new GetZoneSummaryUseCase(mockRecordRepository);
+        mockZoneRepository = {
+            findOneById: jest.fn()
+        };
+        useCase = new GetZoneSummaryUseCase(mockRecordRepository, mockZoneRepository);
     });
 
     it("should return correct summary for multiple records", async () => {
+        mockZoneRepository.findOneById.mockResolvedValue({ id: "zone-1", name: "Test Zone" });
         const records = [
             { temperature: 20 },
             { temperature: 22 },
@@ -30,6 +35,7 @@ describe("GetZoneSummaryUseCase", () => {
     });
 
     it("should handle a single record", async () => {
+        mockZoneRepository.findOneById.mockResolvedValue({ id: "zone-2", name: "Test Zone" });
         const records = [
             { temperature: 18 }
         ];
@@ -46,6 +52,7 @@ describe("GetZoneSummaryUseCase", () => {
     });
 
     it("should handle no records", async () => {
+        mockZoneRepository.findOneById.mockResolvedValue({ id: "zone-3", name: "Test Zone" });
         mockRecordRepository.findByZone.mockResolvedValue([]);
 
         const result = await useCase.execute("zone-3");
@@ -59,6 +66,7 @@ describe("GetZoneSummaryUseCase", () => {
     });
 
     it("should round average temperature to one decimal", async () => {
+        mockZoneRepository.findOneById.mockResolvedValue({ id: "zone-4", name: "Test Zone" });
         const records = [
             { temperature: 20 },
             { temperature: 21 }

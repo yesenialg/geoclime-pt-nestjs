@@ -4,6 +4,7 @@ import { Record } from "src/domain/models/record.entity";
 
 @Injectable()
 export class GetAllRecordsUseCase {
+    
     constructor(
         @Inject('IRecordRepository') private readonly _recordRepository: IRecordRepository) { }
 

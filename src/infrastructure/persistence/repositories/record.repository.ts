@@ -2,8 +2,6 @@ import { Record } from "src/domain/models/record.entity";
 import { Zone } from "src/domain/models/zone.entity";
 import { IRecordRepository } from "src/domain/interfaces/record.repository.interface";
 import { CreateRecordRepositoryDto } from "../../../domain/dtos/create-record.repository.dto";
-import { Inject } from "@nestjs/common";
-import { IZoneRepository } from "src/domain/interfaces/zone.repository.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { RecordEntity } from "../entities/record.entity";
 import { Repository } from "typeorm";
@@ -11,8 +9,7 @@ import { Repository } from "typeorm";
 export class RecordRepository implements IRecordRepository {
   constructor(
     @InjectRepository(RecordEntity)
-    private readonly _recordRepo: Repository<RecordEntity>,
-    @Inject('IZoneRepository') private readonly _zoneRepository: IZoneRepository
+    private readonly _recordRepo: Repository<RecordEntity>
   ) {
   }
 
@@ -42,11 +39,8 @@ export class RecordRepository implements IRecordRepository {
     return records.map(e => new Record(e.id, e.zone, e.temperature, e.timestamp));
   }
 
-  async create(recordDto: CreateRecordRepositoryDto): Promise<Record> {
-    const zone = await this._zoneRepository.findOneById(recordDto.zoneId);
-    if (!zone) {
-      throw new Error(`Zone with id ${recordDto.zoneId} not found`);
-    }
+  async create(recordDto: CreateRecordRepositoryDto, zone: Zone): Promise<Record> {
+
     const recordEntity = this._recordRepo.create({
       zone,
       temperature: recordDto.temperature,

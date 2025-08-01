@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 @Controller('zones')
 @UseGuards(AuthGuard('jwt'), ApiKeyGuard)
 export class ZoneController {
+
   constructor(
     private readonly _createZoneUseCase: CreateZoneUseCase,
     private readonly _getAllZonesUseCase: GetAllZonesUseCase,
@@ -31,7 +32,7 @@ export class ZoneController {
     const summary = await this._getZoneSummaryUseCase.execute(zone);
     return summary;
   }
-  
+
   @Get(':zone/anomalies')
   async getAnomalies(@Param('zone') zone: string) {
     const anomalies = await this._getZoneAnomaliesUseCase.execute(zone);
